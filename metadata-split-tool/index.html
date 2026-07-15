@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分列工具</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+   <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<h1>📊 Metadata Split Tool</h1>
+
+<div id="drop-zone" onclick="document.getElementById('fi').click()" ondragover="event.preventDefault()" ondrop="onDrop(event)">
+  <div class="icon">📁</div>
+  <p style="color:#333;font-weight:500;">点击或拖拽上传 Excel / CSV 文件</p>
+  <p style="font-size:13px;color:#888;margin-top:4px;">支持 .xlsx .xls .csv</p>
+  <input type="file" id="fi" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleFile(this.files[0])">
+</div>
+
+<div id="config-section">
+  <div class="card" style="margin-top:1rem;">
+    <div class="section-label">文件信息</div>
+    <div class="stats">
+      <div class="stat"><div class="lbl">文件名</div><div class="val" id="fn"></div></div>
+      <div class="stat"><div class="lbl">数据行数</div><div class="val" id="rc"></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">分列模式</div>
+    <div class="mode-grid">
+      <button class="mode-btn active" id="mode-ltr" onclick="setMode('ltr')">
+        <div class="mt">➡ 从左往右填入</div>
+        <div class="me">甘肃 → 客运量 → 铁路<br>适合：段数少的行是父级汇总</div>
+      </button>
+      <button class="mode-btn" id="mode-align" onclick="setMode('align')">
+        <div class="mt">⇔ 首尾对齐</div>
+        <div class="me">首段固定 · 末段固定<br>适合：末段始终是同一指标</div>
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">分隔符</div>
+    <div class="sep-btns">
+      <button class="sep-btn active" onclick="setSep(':', this)">冒号 ":"</button>
+      <button class="sep-btn" onclick="setSep('-', this)">横线 "-"</button>
+      <button class="sep-btn" onclick="setSep('/', this)">斜杠 "/"</button>
+      <button class="sep-btn" onclick="setSep('_', this)">下划线 "_"</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:13px;color:#888;">自定义：</span>
+      <input type="text" id="cs" placeholder="输入分隔符" style="width:100px;" oninput="setSepCustom(this.value)">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">列名设置</div>
+    <div class="col-names" id="cn"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">预览（前5行）</div>
+    <div style="overflow-x:auto;"><table id="pt"></table></div>
+  </div>
+
+  <div class="card">
+    <button class="export-btn" onclick="exportFile()">⬇ 导出分列结果（.xlsx）</button>
+    <div class="status" id="sm"></div>
+  </div>
+</div>
+<script src="js/app.js"></script>
+
+</body>
+</html>
