@@ -79,6 +79,8 @@ function proc(){
   maxC=Math.max(...raw.map(r=>r.split(sep).length));
   ensureCols(); renderCols();
   renderPrev(raw.slice(0,5).map(splitRow));
+  // 更新统计信息
+  updateQualityPanel();
 }
 // 根据最大列数生成默认列名
 function ensureCols(){
@@ -119,4 +121,17 @@ function showStatus(msg,type){
   const el=document.getElementById('sm');
   el.textContent=msg; el.className='status '+type; el.style.display='block';
   setTimeout(()=>el.style.display='none',3000);
+}
+//显示统计信息
+function updateQualityPanel(){
+ const qualityPanel = document.getElementById("qualityPanel");
+
+    qualityPanel.innerHTML = `
+      <p>最大层级：${maxC}</p>
+      <p>重复数据:--</p>
+      <p>空白行：--</p>
+      <p>异常格式：--</p>
+      
+      
+    `;
 }

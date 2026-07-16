@@ -73,3 +73,7 @@ metadata-split-tool
 - 保存用户配置
 - 优化指标名称智能解析
 - 增加更多数据清洗能力
+
+## 项目预览
+
+![项目预览](assets/preview.png)
