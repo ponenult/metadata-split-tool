@@ -125,13 +125,33 @@ function showStatus(msg,type){
 //显示统计信息
 function updateQualityPanel(){
  const qualityPanel = document.getElementById("qualityPanel");
-
+ const duplicateCount = countDuplicate();
     qualityPanel.innerHTML = `
-      <p>最大层级：${maxC}</p>
-      <p>重复数据:--</p>
+      最大层级：${maxC}
+      重复数据：${duplicateCount}
       <p>空白行：--</p>
       <p>异常格式：--</p>
       
       
     `;
+}
+//统计重复数据
+function countDuplicate() {
+
+
+    const map = {};
+
+    raw.forEach(item => {
+        map[item] = (map[item] || 0) + 1;
+    });
+
+    let count = 0;
+
+    Object.values(map).forEach(num => {
+        if(num > 1){
+            count++;
+        }
+    });
+
+    return count;
 }
