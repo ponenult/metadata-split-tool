@@ -71,7 +71,7 @@ function splitRow(s){
     out[maxC-1]=parts[parts.length-1]||'';
     for(let i=1;i<parts.length-1;i++) out[i]=parts[i];
   }
-  return out;
+  return [s, ...out];
 }
 // 重新计算数据并刷新预览
 function proc(){
@@ -83,10 +83,17 @@ function proc(){
   updateQualityPanel();
 }
 // 根据最大列数生成默认列名
-function ensureCols(){
-  const def=['大类','分类维度','细分类别','指标名称','列5','列6','列7','列8'];
-  const old=cols.slice(); cols=[];
-  for(let i=0;i<maxC;i++) cols.push(old[i]||def[i]||('列'+(i+1)));
+function ensureCols() {
+    const def = ['大类', '分类维度', '细分类别', '指标名称', '列5', '列6', '列7', '列8'];
+
+    const old = cols.slice();
+
+    // 第一列固定为原始指标
+    cols = ['原始指标'];
+
+    for (let i = 0; i < maxC; i++) {
+        cols.push(old[i + 1] || def[i] || ('列' + (i + 2)));
+    }
 }
 // 渲染列名输入框
 function renderCols(){
@@ -126,13 +133,21 @@ function showStatus(msg,type){
 function updateQualityPanel(){
  const qualityPanel = document.getElementById("qualityPanel");
  const duplicateCount = countDuplicate();
+//  const emptyRowCount = getEmptyRowCount();
+    const levelDistribution = getLevelDistribution();
+    let levelText = "";
+
+Object.keys(levelDistribution).forEach(level => {
+    levelText += `${level}级：${levelDistribution[level]}<br>`;
+});
     qualityPanel.innerHTML = `
       最大层级：${maxC}
       重复数据：${duplicateCount}
-      <p>空白行：--</p>
-      <p>异常格式：--</p>
-      
-      
+      异常格式：--
+
+      <p>层级分布：</p>
+      ${levelText}
+
     `;
 }
 //统计重复数据
@@ -154,4 +169,28 @@ function countDuplicate() {
     });
 
     return count;
+}
+//统计空白行
+// function getEmptyRowCount() {
+
+//     let count = 0;
+
+//     raw.forEach(item => {
+
+//         if (item.trim() === "") {
+//             count++;
+//         }
+
+//     });
+
+//     return count;
+// }
+//层级分布
+function getLevelDistribution() {
+  const map = {};
+  raw.forEach(row => {
+    const level = row.split(sep).length;
+    map[level] = (map[level] || 0) + 1;
+  });
+  return map;
 }
